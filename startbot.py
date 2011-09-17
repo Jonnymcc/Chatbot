@@ -1,4 +1,5 @@
 import os
+import re
 import time
 import random
 import english
@@ -25,9 +26,14 @@ def add_to_brain(msg, write_to_file=False):
         f.write(msg + '\n')
         f.close()
     
+    OMIT = ['is','are','that']
+    REMOVE_CHARS = re.compile("""[?'",.]""")
+    
     if not msg.strip().lower() in [x.lower() for x in markov.keys()]:
         for word in msg.split():
-            markov[msg.strip()].append(word)
+            word = REMOVE_CHARS.sub('',word)
+            if word not in OMIT:
+                markov[msg.strip()].append(word)
     #print msg
     #print markov[msg]	
 
@@ -44,20 +50,28 @@ def generate_reply(msg, chain_length):
         #print x        
         
         results = [(a,b) for a,b in markov.items() if x.lower() in [c.lower() for c in b]]
-        #print results
+        #print "%s \n" % results
         
         for d,e in results:
             choices[d] = 1 + choices[d]
-    try:
-        del choices[msg]
-    except: pass
     
-    #print choices
+    if len(choices) > 1:
+        #try:
+        for cut in [x for x in choices.keys() if x.lower() == msg.lower()]:
+            del choices[cut]
+        #except: pass
+    
+    #print "%s \n" % choices
+    
+    r_items = [x for x,y in choices.items() if y >= choices[max(choices, key=choices.get)]]
+    #print r_items
        
     try:
-        response = max(choices, key=choices.get)
+        response = random.choice([x for x,y in choices.items() if y >= 
+                    choices[max(choices, key=choices.get)]])
     except:
-        response = random.choice(['Um...','What?',"I don't understand. Can you be more specific?"])
+        response = random.choice(['Um...','What?',
+                                  "I don't understand. Can you be more specific?"])
         
     return response
 	
@@ -79,8 +93,8 @@ if __name__ == "__main__":
 		user_msg = raw_input(">")
 		
 		if user_msg != "goodbye":
-			nagisa.remember(user_msg)
 			nagisa.reply(user_msg)
+			nagisa.remember(user_msg)
 		else:
 			print "Nagisa: Goodbye!"
 			time.sleep(1)
