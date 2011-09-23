@@ -1,24 +1,28 @@
 import re
 
+FIRST_PERSON = ['i', 'me', 'my', 'mine']
 SECOND_PERSON = ["you","your","yours","youre"]
 
 # A start to handling pronouns... may be harder than I anticipate.
 def possesion_handler(msg):
-    words = msg
     
     # Not sure if this is useful yet    
-    if ("my" or "mine") in words:
+    if [True] in [[a in msg] for a in FIRST_PERSON]:
+        try: msg.remove("i"); msg.append("you"); 
+        except: pass
+        try: msg.remove("me"); msg.append("you"); 
+        except: pass
         try: msg.remove("my"); msg.append("your"); 
         except: pass
-        try: msg.remove("mine"); msg.append("yours"); 
+        try: msg.remove("mine"); msg.append("your"); 
         except: pass
         option = 1
-        #print "possession handler: path 1"
+        print "possession handler: path 1"
     
-    elif [True] in [[a in words] for a in SECOND_PERSON]:
-        try: msg.remove("you"); msg.append("I"); 
+    elif [True] in [[a in msg] for a in SECOND_PERSON]:
+        try: msg.remove("you"); msg.append("i"); 
         except: pass
-        try: msg.remove("youre"); msg.append("I"); 
+        try: msg.remove("youre"); msg.append("i"); 
         except: pass
         try: msg.remove("your"); msg.append("my"); 
         except: pass
@@ -35,13 +39,8 @@ def possesion_handler(msg):
 
 # Come back to this maybe...
 def pronoun_handler(msg):
-	first_per = ["i"]
-	second_per = ["you"]
-	third_per = ["he","she","they"]
 	
-	words = msg
-	if first_per in words:
+	if first_per in msg:
 		msg = msg.replace()
-	
 	
 	return
