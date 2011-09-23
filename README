@@ -1,0 +1,9 @@
+Run program by starting startbot.py
+
+It will create a txt file storing messages input by the user and when 
+exiting via the user message "Goodbye", it will also export the stored 
+values using the cPickle module to allow quicker load times afterwards.
+
+There is also a profile module that loads statements about the bot's 
+self from a profile.txt file. This is similar to the first file except 
+this one is referred to when the user message is referring to the bot.
